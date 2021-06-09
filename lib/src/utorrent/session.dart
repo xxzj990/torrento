@@ -22,13 +22,13 @@ class Session {
   // 3. cookie
 
   Map<String, String> sessionHeaders = {};
-  String _token;
+  String? _token;
 
   Session() : sessionHeaders = {'content-type': 'application/json'};
 
   /// Pass in a valid URL [url] and optionally, [headers] to fire a `GET` request at
   /// the specified URL.
-  Future<http.Response> get(dynamic url, {Map<String, String> headers}) async {
+  Future<http.Response> get(dynamic url, {Map<String, String>? headers}) async {
     assert(url != null);
 
     if (_token != null) url = '${url}&token=$_token';
@@ -48,9 +48,9 @@ class Session {
   /// Pass in URL [url], optionally headers, body and encoding (which defaults to utf8) to
   /// fire a `POST` request at the specified url.
   Future<http.Response> post(dynamic url,
-      {Map<String, String> headers,
-      Map<String, dynamic> body,
-      Encoding encoding}) async {
+      {Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      Encoding? encoding}) async {
     assert(url != null);
 
     http.Response response =
@@ -66,7 +66,7 @@ class Session {
   /// Pass in URL [url] and optionally fieldName and path of the file to be sent.
   /// This fires a multipart `POST` request at the specfied url.
   Future<http.StreamedResponse> multipartPost(dynamic url,
-      {String fieldName, String path}) async {
+      {String? fieldName, String? path}) async {
     assert(url != null);
 
     if (_token != null) url += '&token=$_token';
@@ -74,7 +74,7 @@ class Session {
     Uri uri = Uri.parse(url);
 
     http.MultipartFile multipartFile =
-        await http.MultipartFile.fromPath('torrent_file', path);
+        await http.MultipartFile.fromPath('torrent_file', path ?? '');
 
     http.MultipartRequest request = http.MultipartRequest('POST', uri);
 
@@ -91,7 +91,7 @@ class Session {
   /// Utility function to extract a cookie, if present,
   /// and add it to session headers.
   void _updateCookie(http.Response res) {
-    String rawCookie = res.headers['set-cookie'];
+    String? rawCookie = res.headers['set-cookie'];
 
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
@@ -100,7 +100,7 @@ class Session {
     }
   }
 
-  set token(String token) => _token = token;
+  set token(String? token) => _token = token;
 
   /// Utility function to clear a session.
   void clearSession() {

@@ -15,7 +15,7 @@ enum TorrentFilter {
 // API Doc at : https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information
 abstract class QbitTorrentController extends TorrentController {
   factory QbitTorrentController(String serverIp, int serverPort) {
-    return QbitTorrentControllerImpl(serverIp, serverPort);
+    return QbitTorrentControllerImpl(serverIP: serverIp, serverPort: serverPort);
   }
 
   Future stopAllTorrents();
@@ -55,7 +55,7 @@ abstract class QbitTorrentController extends TorrentController {
 
   /// Get Torrent Peers data
   Future<dynamic> syncTorrentPeers(
-      {String responseId = '0', String torrentHash});
+      {String responseId = '0', required String torrentHash});
 
   ///Get global transfer info . This method returns info you usually see in qBt status bar.
   Future<dynamic> getTransferInfo();
@@ -212,7 +212,7 @@ abstract class QbitTorrentController extends TorrentController {
 
   Future removeTorrentTags(List<String> torrentHashes, List<String> tags);
 
-  Future<List<String>> getAllTags();
+  Future<List<String>?> getAllTags();
 
   Future createTags(List<String> tags);
 

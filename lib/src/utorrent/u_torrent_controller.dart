@@ -8,7 +8,7 @@ import 'package:torrento/src/utorrent/session.dart';
 import 'package:meta/meta.dart';
 
 abstract class UTorrentController extends TorrentController {
-  factory UTorrentController({String serverIp, int serverPort}) =>
+  factory UTorrentController({required String serverIp, required int serverPort}) =>
       _UTorrentControllerImpl(
         serverIp: serverIp,
         serverPort: serverPort,
@@ -22,9 +22,9 @@ class _UTorrentControllerImpl implements UTorrentController {
 
   final Session _session = Session();
 
-  Map<String, String> actions;
+  Map<String, String>? actions;
 
-  _UTorrentControllerImpl({this.serverIp, @required this.serverPort})
+  _UTorrentControllerImpl({required this.serverIp, required this.serverPort})
       : baseUrl = 'http://$serverIp:$serverPort/gui/' {
     assert(serverIp != null);
     assert(serverPort != null);
@@ -41,7 +41,7 @@ class _UTorrentControllerImpl implements UTorrentController {
     setSessionToken(await getToken());
   }
 
-  String getBase64EncodingOf({String username, String password}) {
+  String getBase64EncodingOf({required String username, required String password}) {
     return 'Basic ' + base64.encode(utf8.encode('$username:$password'));
   }
 
@@ -49,10 +49,10 @@ class _UTorrentControllerImpl implements UTorrentController {
     _session.sessionHeaders.addAll(keyValuePairs);
   }
 
-  Future<String> getToken() async {
+  Future<String?> getToken() async {
     http.Response tokenResponse = await _session.get('${baseUrl}token.html');
 
-    String token =
+    String? token =
         html.parse(tokenResponse?.body)?.getElementById('token')?.text;
 
     if (tokenResponse.statusCode != 200) {
@@ -62,7 +62,7 @@ class _UTorrentControllerImpl implements UTorrentController {
     return token;
   }
 
-  void setSessionToken(String token) {
+  void setSessionToken(String? token) {
     _session.token = token;
   }
 
@@ -92,9 +92,7 @@ class _UTorrentControllerImpl implements UTorrentController {
     return response;
   }
 
-  Future<http.StreamedResponse> addTorrentFile({String filePath}) async {
-    assert(filePath != null);
-
+  Future<http.StreamedResponse> addTorrentFile({required String filePath}) async {
     String url = '$baseUrl?action=add-file';
 
     http.StreamedResponse response = await _session.multipartPost(url,
@@ -387,7 +385,7 @@ class _UTorrentControllerImpl implements UTorrentController {
 
   @override
   Future setTorrentProperties(String torrentHash,
-      {Map<String, dynamic> propertiesAndValues}) async {
+      {required Map<String, dynamic> propertiesAndValues}) async {
     String url =
         '${baseUrl}?action=setprops${generateValuePairsString(propertiesAndValues)}';
 

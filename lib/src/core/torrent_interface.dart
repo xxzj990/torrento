@@ -38,7 +38,7 @@ abstract class TorrentController {
 
   Future setTorrentProperties(
     String torrentHash, {
-    Map<String, dynamic> propertiesAndValues,
+    required Map<String, dynamic> propertiesAndValues,
   });
 
   // ! To get a list of files under a given torrent job

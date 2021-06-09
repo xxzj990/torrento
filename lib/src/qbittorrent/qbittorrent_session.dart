@@ -10,7 +10,7 @@ class Session implements IQbitTorrentSession {
   Map<String, String> sessionHeaders = {};
 
   @override
-  Future<http.Response> get(String url, {Map<String, String> headers}) async {
+  Future<http.Response> get(String url, {Map<String, String>? headers}) async {
     /// headers receives as per the headers arg is sent to the API>
     http.Response response = await http.get(Uri.parse(url), headers: sessionHeaders);
     _updateCookie(response);
@@ -20,9 +20,9 @@ class Session implements IQbitTorrentSession {
 
   @override
   Future<http.Response> post(dynamic url,
-      {Map<String, String> headers,
-      Map<String, dynamic> body,
-      Encoding encoding}) async {
+      {Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      Encoding? encoding}) async {
     body?.keys?.forEach((key) {
       if (body[key] == null) {
         body.remove(key);
@@ -39,7 +39,7 @@ class Session implements IQbitTorrentSession {
   }
 
   void _updateCookie(http.Response response) {
-    String rawCookie = response.headers['set-cookie'];
+    String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
       sessionHeaders['cookie'] =
