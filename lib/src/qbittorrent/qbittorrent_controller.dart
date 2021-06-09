@@ -15,12 +15,12 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
   // API Doc at : https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information
   final String serverIP;
   final int serverPort;
-  String _apiURL;
+  final String _apiURL;
   Session session = Session();
 
   final String API_DOC_URL = 'https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information';
 
-  QbitTorrentControllerImpl({required this.serverIP, required this.serverPort}) : this._apiURL = 'http://${serverIP}:${serverPort}/api/v2' {}
+  QbitTorrentControllerImpl({required this.serverIP, required this.serverPort}) : _apiURL = 'http://${serverIP}:${serverPort}/api/v2' {}
 
 // Throws InvalidParameterException if status code is not 200
   void _checkForInvalidParameters(http.Response response) {
@@ -352,21 +352,12 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
     if (torrentFileContent != null) {
       body[Constant.torrents] = torrentFileContent;
     }
-    if (skip_checking != null) {
-      body[Constant.skip_checking] = skip_checking;
-    }
-    if (paused != null) {
-      body[Constant.paused] = paused;
-    }
-    if (root_folder != null) {
-      body[Constant.root_folder] = root_folder;
-    }
-    if (sequentialDownload != null) {
-      body[Constant.sequentialDownload] = sequentialDownload;
-    }
-    if (prioritizeFirstLastPiece != null) {
-      body[Constant.firstLastPiecePrio] = prioritizeFirstLastPiece;
-    }
+
+    body[Constant.skip_checking] = skip_checking;
+    body[Constant.paused] = paused;
+    body[Constant.root_folder] = root_folder;
+    body[Constant.sequentialDownload] = sequentialDownload;
+    body[Constant.firstLastPiecePrio] = prioritizeFirstLastPiece;
 
     if (savepath != null) {
       body[Constant.savePath] = savepath;
@@ -534,7 +525,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future<List<String>?> getAllTags() async {
-    return (await _sendGetRequestAndCheckResponse(QbitTorrentApiEndPoint.API_TORRENT_TAGS)).body?.split(',');
+    return (await _sendGetRequestAndCheckResponse(QbitTorrentApiEndPoint.API_TORRENT_TAGS)).body.split(',');
   }
 
   @override
