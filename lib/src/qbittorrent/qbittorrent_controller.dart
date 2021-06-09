@@ -13,14 +13,21 @@ import 'package:torrento/src/qbittorrent/qbittorrent_util.dart';
 
 class QbitTorrentControllerImpl implements QbitTorrentController {
   // API Doc at : https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information
-  final String serverIP;
-  final int serverPort;
-  final String _apiURL;
+  //final String serverIP;
+  //final int serverPort;
+  final String apiURL;
   Session session = Session();
 
   final String API_DOC_URL = 'https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information';
 
-  QbitTorrentControllerImpl({required this.serverIP, required this.serverPort}) : _apiURL = 'http://${serverIP}:${serverPort}/api/v2' {}
+  //QbitTorrentControllerImpl(String url) : apiURL = '$url/api/v2';
+
+  QbitTorrentControllerImpl._({required this.apiURL});
+
+  factory QbitTorrentControllerImpl({required String url}) {
+    String apiURL = '$url/api/v2';
+    return QbitTorrentControllerImpl._(apiURL: apiURL);
+  }
 
 // Throws InvalidParameterException if status code is not 200
   void _checkForInvalidParameters(http.Response response) {
@@ -31,14 +38,14 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
 // TODO : USE THIS METHOD across all other methods TO REMOVE Many of the REDUNDANCIES
   Future<Response> _sendPostAndCheckResponse(String endPoint, {Map<String, dynamic>? body}) async {
-    Response resp = await session.post('${_apiURL}${endPoint}', body: body);
+    Response resp = await session.post('${apiURL}${endPoint}', body: body);
     _checkForInvalidParameters(resp);
     return resp;
   }
 
 // TODO : USE THIS METHOD across all other methods TO REMOVE Many of the REDUNDANCIES
   Future<Response> _sendGetRequestAndCheckResponse(String endPoint, {Map<String, String>? headers}) async {
-    Response resp = await session.get('${_apiURL}${endPoint}', headers: headers);
+    Response resp = await session.get('${apiURL}${endPoint}', headers: headers);
     _checkForInvalidParameters(resp);
     return resp;
   }
@@ -47,7 +54,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future logIn(String username, String password) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_AUTH_LOGIN}', body: {Constant.username: username, Constant.password: password});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_AUTH_LOGIN}', body: {Constant.username: username, Constant.password: password});
 
     if (resp.body.trim() == 'Fails.') {
       throw InvalidCredentialsException(resp);
@@ -70,43 +77,43 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future<String> getVersion() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_APP_VERSION}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_APP_VERSION}');
     return resp.body;
   }
 
   @override
   Future<dynamic> getBuildInfo() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_APP_BUILDINFO}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_APP_BUILDINFO}');
     return resp.body;
   }
 
   @override
   Future<String> getDefaultSavePath() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_APP_DEFAULT_SAVE_PATH}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_APP_DEFAULT_SAVE_PATH}');
     return resp.body;
   }
 
   @override
   Future<String> getWebApiVersion() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_APP_WEBAPIVERSION}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_APP_WEBAPIVERSION}');
     return resp.body;
   }
 
   @override
   Future shutdownApplication() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_APP_SHUTDOWN}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_APP_SHUTDOWN}');
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<dynamic> getClientSettings() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_APP_PREFERENCES}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_APP_PREFERENCES}');
     return json.decode(resp.body);
   }
 
   @override
   Future setClientSettings(Map<String, dynamic> jsondata) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_APP_SET_PREFERENCES}', body: {Constant.json: json.encode(jsondata)});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_APP_SET_PREFERENCES}', body: {Constant.json: json.encode(jsondata)});
     _checkForInvalidParameters(resp);
   }
 
@@ -121,7 +128,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future<dynamic> getPeerLog({int last_known_id = -1}) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_LOG_PEER}', body: {Constant.last_known_id: last_known_id});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_LOG_PEER}', body: {Constant.last_known_id: last_known_id});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
@@ -130,14 +137,14 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future<dynamic> syncMainData({String responseId = Constant.zeroDigit}) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_SYNC_MAINDATA}', body: {Constant.rid: responseId});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_SYNC_MAINDATA}', body: {Constant.rid: responseId});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> syncTorrentPeers({String responseId = Constant.zeroDigit, required String torrentHash}) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_SYNC_TORRENT_PEERS}', body: {Constant.rid: responseId, Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_SYNC_TORRENT_PEERS}', body: {Constant.rid: responseId, Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
@@ -147,51 +154,51 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future<dynamic> getTransferInfo() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_INFO}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_INFO}');
     return json.decode(resp.body);
   }
 
   @override
   Future<String> getSpeedLimitsMode() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_SPEED_LIMITS_MODE}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_SPEED_LIMITS_MODE}');
     return resp.body;
   }
 
   @override
   Future<String> toggleSpeedLimitsMode() async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_TOGGLE_SPEED_LIMITS}');
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_TOGGLE_SPEED_LIMITS}');
     return resp.body;
   }
 
   @override
   Future<String> getGlobalDownloadLimit() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_DOWNLOAD_LIMIT}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_DOWNLOAD_LIMIT}');
     return resp.body;
   }
 
   @override
   Future<String> setGlobalDownloadLimit(int limit) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_SET_DOWNLOAD_LIMIT}', body: {Constant.limit: limit});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_SET_DOWNLOAD_LIMIT}', body: {Constant.limit: limit});
     _checkForInvalidParameters(resp);
     return resp.body;
   }
 
   @override
   Future<String> getGlobalUploadLimit() async {
-    Response resp = await session.get('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_UPLOAD_LIMIT}');
+    Response resp = await session.get('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_UPLOAD_LIMIT}');
     return resp.body;
   }
 
   @override
   Future<String> setGlobalUploadLimit(int limit) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_SET_UPLOAD_LIMIT}', body: {Constant.limit: limit});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_SET_UPLOAD_LIMIT}', body: {Constant.limit: limit});
     _checkForInvalidParameters(resp);
     return resp.body;
   }
 
   @override
   Future<String> banPeers(List<String> peers) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_BAN_PEERS}', body: {Constant.peers: peers.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TRANSFER_BAN_PEERS}', body: {Constant.peers: peers.join('|')});
     _checkForInvalidParameters(resp);
     return resp.body;
   }
@@ -220,111 +227,111 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       body[Constant.hashes] = hashes.join('|');
     }
 
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_INFO}', body: body);
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_INFO}', body: body);
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> getTorrentProperties(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PROPERTIES}', body: {Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PROPERTIES}', body: {Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> getTorrentTrackers(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_TRACKERS}', body: {Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_TRACKERS}', body: {Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> getTorrentWebSeeds(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_WEBSEEDS}', body: {Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_WEBSEEDS}', body: {Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> getTorrentContents(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_FILES}', body: {Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_FILES}', body: {Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> getTorrentPieceStates(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PIECE_STATES}', body: {Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PIECE_STATES}', body: {Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<dynamic> getTorrentPieceHashes(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PIECE_HASHES}', body: {Constant.hash: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PIECE_HASHES}', body: {Constant.hash: torrentHash});
     _checkForInvalidParameters(resp);
     return json.decode(resp.body);
   }
 
   @override
   Future<void> pauseMultipleTorrents(List<String> torrentHashs) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PAUSE}', body: {Constant.hashes: torrentHashs.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PAUSE}', body: {Constant.hashes: torrentHashs.join('|')});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> pauseTorrent(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PAUSE}', body: {Constant.hashes: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_PAUSE}', body: {Constant.hashes: torrentHash});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> resumeTorrent(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RESUME}', body: {Constant.hashes: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RESUME}', body: {Constant.hashes: torrentHash});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> resumeMultipleTorrents(List<String> torrentHashs) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RESUME}', body: {Constant.hashes: torrentHashs.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RESUME}', body: {Constant.hashes: torrentHashs.join('|')});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> removeTorrent(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_DELETE}', body: {Constant.hashes: torrentHash, Constant.deleteFiles: false});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_DELETE}', body: {Constant.hashes: torrentHash, Constant.deleteFiles: false});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> removeMultipleTorrents(List<String> torrentHashs) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_DELETE}', body: {Constant.hashes: torrentHashs.join('|'), Constant.deleteFiles: false});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_DELETE}', body: {Constant.hashes: torrentHashs.join('|'), Constant.deleteFiles: false});
 
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> removeMultipleTorrentsWithData(List<String> torrentHashs) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_DELETE}', body: {Constant.hashes: torrentHashs.join('|'), Constant.deleteFiles: Constant.trueString});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_DELETE}', body: {Constant.hashes: torrentHashs.join('|'), Constant.deleteFiles: Constant.trueString});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> recheckMultipleTorrents(List<String> torrentHashs) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RECHECK}', body: {Constant.hashes: torrentHashs.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RECHECK}', body: {Constant.hashes: torrentHashs.join('|')});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> recheckTorrent(String torrentHash) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RECHECK}', body: {Constant.hashes: torrentHash});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_RECHECK}', body: {Constant.hashes: torrentHash});
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<String> reannounceTorrents(List<String> torrentHashs) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_REANNOUNCE}', body: {Constant.hashes: torrentHashs.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_REANNOUNCE}', body: {Constant.hashes: torrentHashs.join('|')});
     _checkForInvalidParameters(resp);
     return (resp.body);
   }
@@ -384,13 +391,13 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       body.remove(Constant.torrents);
     }
 
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD}', body: body);
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD}', body: body);
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> addTorrentTrackers(String torrentHash, List<String> trackers) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD_TRACKERS}', body: {Constant.hash: torrentHash, Constant.urls: trackers.join('%0A')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD_TRACKERS}', body: {Constant.hash: torrentHash, Constant.urls: trackers.join('%0A')});
     _checkForInvalidParameters(resp);
   }
 
@@ -398,21 +405,21 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
   @override
   Future<void> editTorrentTrackers(String torrentHash, List<String> oldTrackers, List<String> newTrackers) async {
     Response resp = await session
-        .post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_EDIT_TRACKERS}', body: {Constant.hash: torrentHash, Constant.origUrl: oldTrackers.join('%0A'), Constant.newUrl: newTrackers.join('%0A')});
+        .post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_EDIT_TRACKERS}', body: {Constant.hash: torrentHash, Constant.origUrl: oldTrackers.join('%0A'), Constant.newUrl: newTrackers.join('%0A')});
     _checkForInvalidParameters(resp);
   }
 
   ///See docs for response code meaning
   @override
   Future<void> removeTorrentTrackers(String torrentHash, List<String> trackers) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_REMOVE_TRACKERS}', body: {Constant.hash: torrentHash, Constant.urls: trackers.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_REMOVE_TRACKERS}', body: {Constant.hash: torrentHash, Constant.urls: trackers.join('|')});
     _checkForInvalidParameters(resp);
   }
 
   /// Returns true if successfully added
   @override
   Future<void> addTorrentPeers(List<String> torrentHashes, List<String> peers) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD_PEERS}', body: {Constant.hashes: torrentHashes.join('|'), Constant.peers: peers.join('|')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD_PEERS}', body: {Constant.hashes: torrentHashes.join('|'), Constant.peers: peers.join('|')});
 
     _checkForInvalidParameters(resp);
   }
@@ -474,21 +481,21 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   @override
   Future<void> addNewCategory(String category, String savePath) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_CREATE_CATEGORY}', body: {Constant.category: category, Constant.savePath: savePath});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_CREATE_CATEGORY}', body: {Constant.category: category, Constant.savePath: savePath});
 
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future<void> addTorrentTags(List<String> torrentHashes, List<String> tags) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD_TAGS}', body: {Constant.hashes: torrentHashes.join('|'), Constant.tags: tags.join(',')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD_TAGS}', body: {Constant.hashes: torrentHashes.join('|'), Constant.tags: tags.join(',')});
 
     _checkForInvalidParameters(resp);
   }
 
   @override
   Future createTags(List<String> tags) async {
-    Response resp = await session.post('${_apiURL}${QbitTorrentApiEndPoint.API_TORRENT_CREATE_TAGS}', body: {Constant.tags: tags.join(',')});
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_CREATE_TAGS}', body: {Constant.tags: tags.join(',')});
 
     _checkForInvalidParameters(resp);
   }

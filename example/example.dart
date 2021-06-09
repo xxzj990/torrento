@@ -1,7 +1,7 @@
 import 'package:torrento/torrento.dart';
 
 void main(List<String> args) async {
-  QbitTorrentController obj = QbitTorrentController('192.168.0.102', 8080);
+  QbitTorrentController obj = QbitTorrentController('http://192.168.0.102:8080');
   await obj.logIn('natesh', 'password');
   await obj.getFilesOfTorrent('fb71eea2959ea406b0feeca4c28cf1c15495e80f');
 

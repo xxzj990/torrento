@@ -14,7 +14,7 @@ class Session implements IQbitTorrentSession {
     /// headers receives as per the headers arg is sent to the API>
     http.Response response = await http.get(Uri.parse(url), headers: sessionHeaders);
     _updateCookie(response);
-    log('status : ${response.statusCode} , response body : ' + response.body);
+    //log('status : ${response.statusCode} , response body : ' + response.body);
     return response;
   }
 
@@ -29,7 +29,7 @@ class Session implements IQbitTorrentSession {
     });
 
     http.Response response = await http.post(Uri.parse(url), body: body, headers: sessionHeaders);
-    log('status : ${response.statusCode} , response body : ' + response.body);
+    //log('status : ${response.statusCode} , response body : ' + response.body);
     _updateCookie(response);
     return response;
   }

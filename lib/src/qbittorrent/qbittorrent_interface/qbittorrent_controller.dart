@@ -14,8 +14,8 @@ enum TorrentFilter {
 
 // API Doc at : https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information
 abstract class QbitTorrentController extends TorrentController {
-  factory QbitTorrentController(String serverIp, int serverPort) {
-    return QbitTorrentControllerImpl(serverIP: serverIp, serverPort: serverPort);
+  factory QbitTorrentController(String url) {
+    return QbitTorrentControllerImpl(url: url);
   }
 
   Future stopAllTorrents();
