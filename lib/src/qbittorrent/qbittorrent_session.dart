@@ -27,7 +27,7 @@ class Session implements IQbitTorrentSession {
       }
     });
 
-    http.Response response = await http.post(Uri.parse(url), body: body, headers: sessionHeaders);
+    http.Response response = await http.post(Uri.parse(url), body: body, headers: sessionHeaders, encoding: encoding);
     //log('status : ${response.statusCode} , response body : ' + response.body);
     _updateCookie(response);
     return response;
