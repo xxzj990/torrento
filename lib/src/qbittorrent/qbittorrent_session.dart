@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:torrento/src/qbittorrent/qbittorrent_interface/qbittorrent_session.dart';
@@ -19,7 +18,7 @@ class Session implements IQbitTorrentSession {
   }
 
   @override
-  Future<http.Response> post(String url, {Map<String, String>? headers, Map<String, dynamic>? body, Encoding? encoding}) async {
+  Future<http.Response> post(String url, {Map<String, String>? headers, Map<String, dynamic>? body, Encoding encoding = const Utf8Codec()}) async {
     body?.keys.forEach((key) {
       if (body[key] == null) {
         body.remove(key);
