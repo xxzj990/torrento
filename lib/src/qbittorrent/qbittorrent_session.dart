@@ -6,7 +6,7 @@ import 'package:torrento/src/qbittorrent/qbittorrent_interface/qbittorrent_sessi
 
 ///Singleton Session class to handle cookies
 class Session implements IQbitTorrentSession {
-  Map<String, String> sessionHeaders = {'Content-type': 'application/json; charset=utf-8'};
+  Map<String, String> sessionHeaders = {'Content-Type': 'text/plain; charset=UTF-8'};
 
   @override
   Future<http.Response> get(String url, {Map<String, String>? headers}) async {
