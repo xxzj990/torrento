@@ -367,7 +367,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
     body[Constant.firstLastPiecePrio] = prioritizeFirstLastPiece;
 
     if (savepath != null) {
-      body[Constant.savePath] = savepath;
+      body[Constant.savePath2] = savepath;
     }
     if (cookie != null) {
       body[Constant.cookie] = cookie;
