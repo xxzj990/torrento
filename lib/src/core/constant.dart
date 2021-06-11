@@ -1,7 +1,6 @@
 class Constant {
   static const category = 'category';
   static const savePath = 'savePath';
-  static const savePath2 = 'savepath';
   static const hash = 'hash';
   static const hashes = 'hashes';
   static const cookie = 'cookie';
