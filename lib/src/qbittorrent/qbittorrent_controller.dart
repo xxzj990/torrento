@@ -358,7 +358,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       fields[Constant.urls] = urls.join('%0A');
     }
     if (savepath != null) {
-      fields[Constant.savePath] = savepath;
+      fields[Constant.savePath2] = savepath;
     }
     if (cookie != null) {
       fields[Constant.cookie] = cookie;
