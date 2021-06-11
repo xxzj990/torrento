@@ -19,7 +19,7 @@ abstract class TorrentController {
   Future removeTorrentAndData(String torrentHash);
   Future recheckTorrent(String torrentHash);
 
-  Future addTorrent(String torrentUrl, Uint8List? torrentFileContent);
+  Future addTorrent(String? torrentUrl, Uint8List? torrentFileContent);
 
   // * To handle multiple torrents
 

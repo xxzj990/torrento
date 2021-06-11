@@ -110,7 +110,7 @@ abstract class QbitTorrentController extends TorrentController {
   /// urls : list of URLs
   ///torrents : Raw data of torrent file. torrents can be presented multiple times.
   @override
-  Future addTorrent(String url, Uint8List? torrentFileContent,
+  Future addTorrent(String? url, Uint8List? torrentFileContent,
       {String savePath,
       String cookie,
       String category,

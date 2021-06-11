@@ -682,7 +682,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
   }
 
   @override
-  Future<void> addTorrent(String url, Uint8List? torrentFileContent,
+  Future<void> addTorrent(String? url, Uint8List? torrentFileContent,
       {String? savePath,
       String? cookie,
       String? category,
@@ -695,7 +695,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       bool? useAutoTMM,
       bool sequentialDownload = false,
       bool prioritizeFirstLastPiece = false}) async {
-    await addTorrents([url], torrentFileContent == null ? [] : [torrentFileContent],
+    await addTorrents(url == null ? [] : [url], torrentFileContent == null ? [] : [torrentFileContent],
         savepath: savePath,
         cookie: cookie,
         category: category,

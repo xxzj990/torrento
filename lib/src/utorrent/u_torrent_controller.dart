@@ -76,7 +76,7 @@ class _UTorrentControllerImpl implements UTorrentController {
   }
 
   @override
-  Future<http.Response> addTorrent(String torrentUrl, Uint8List? torrentFileContent) async {
+  Future<http.Response> addTorrent(String? torrentUrl, Uint8List? torrentFileContent) async {
     String url = '$baseUrl?action=add-url&s=$torrentUrl';
 
     http.Response response = await _session.get(url);
