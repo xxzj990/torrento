@@ -46,7 +46,7 @@ class Session implements IQbitTorrentSession {
     var request = http.MultipartRequest('POST', Uri.parse(url));
     if (fields.isNotEmpty) {
       fields.forEach((key, value) {
-        request.fields[key] = value;
+        request.fields[key] = '$value';
       });
     }
     if (files.isNotEmpty) {
