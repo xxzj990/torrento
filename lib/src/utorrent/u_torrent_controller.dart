@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:html/parser.dart' as html;
 import 'package:http/http.dart' as http;
@@ -75,7 +76,7 @@ class _UTorrentControllerImpl implements UTorrentController {
   }
 
   @override
-  Future<http.Response> addTorrent(String torrentUrl) async {
+  Future<http.Response> addTorrent(String torrentUrl, Uint8List? torrentFileContent) async {
     String url = '$baseUrl?action=add-url&s=$torrentUrl';
 
     http.Response response = await _session.get(url);

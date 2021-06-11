@@ -5,6 +5,11 @@ class InvalidParameterException implements Exception {
   InvalidParameterException(this.response);
 }
 
+class InvalidParameterException2 implements Exception {
+  StreamedResponse response;
+  InvalidParameterException2(this.response);
+}
+
 class InvalidCredentialsException implements Exception {
   Response response;
   InvalidCredentialsException(this.response);

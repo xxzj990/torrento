@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'dart:typed_data';
+
 abstract class TorrentController {
   // * To handle single torrent
 
@@ -17,7 +19,7 @@ abstract class TorrentController {
   Future removeTorrentAndData(String torrentHash);
   Future recheckTorrent(String torrentHash);
 
-  Future addTorrent(String torrentUrl);
+  Future addTorrent(String torrentUrl, Uint8List? torrentFileContent);
 
   // * To handle multiple torrents
 

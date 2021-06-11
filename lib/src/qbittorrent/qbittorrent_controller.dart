@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:torrento/src/core/constant.dart';
 import 'package:torrento/src/core/exceptions/exceptions.dart';
 import 'package:torrento/src/qbittorrent/qbittorrent_interface/qbittorrent_controller.dart';
@@ -336,11 +338,9 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
     return (utf8.decode(resp.bodyBytes));
   }
 
-  ///TODO : ADD TORRENT HAS TO BE REDESIGNED PROPERLY
   @override
-  Future addTorrents(List<String> urls,
-      {String? torrentFileContent,
-      String? savepath,
+  Future addTorrents(List<String> urls, List<Uint8List> torrentFileContents,
+      {String? savepath,
       String? cookie,
       String? category,
       bool skip_checking = false,
@@ -352,47 +352,51 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       bool? useAutoTMM,
       bool sequentialDownload = false,
       bool prioritizeFirstLastPiece = false}) async {
-    final Map<String, dynamic> body = {
-      Constant.urls: urls.join('%0A'),
-    };
+    final Map<String, dynamic> fields = {};
 
-    if (torrentFileContent != null) {
-      body[Constant.torrents] = torrentFileContent;
+    if (urls.isNotEmpty) {
+      fields[Constant.urls] = urls.join('%0A');
     }
-
-    body[Constant.skip_checking] = skip_checking;
-    body[Constant.paused] = paused;
-    body[Constant.root_folder] = root_folder;
-    body[Constant.sequentialDownload] = sequentialDownload;
-    body[Constant.firstLastPiecePrio] = prioritizeFirstLastPiece;
-
     if (savepath != null) {
-      body[Constant.savePath2] = savepath;
+      fields[Constant.savePath2] = savepath;
     }
     if (cookie != null) {
-      body[Constant.cookie] = cookie;
+      fields[Constant.cookie] = cookie;
     }
     if (category != null) {
-      body[Constant.category] = category;
+      fields[Constant.category] = category;
     }
     if (rename != null) {
-      body[Constant.rename] = rename;
+      fields[Constant.rename] = rename;
     }
     if (uploadLimit != null) {
-      body[Constant.upLimit] = uploadLimit;
+      fields[Constant.upLimit] = uploadLimit;
     }
     if (downloadLimit != null) {
-      body[Constant.dlLimit] = downloadLimit;
+      fields[Constant.dlLimit] = downloadLimit;
     }
     if (useAutoTMM != null) {
-      body[Constant.useAutoTMM] = useAutoTMM;
-    }
-    if (torrentFileContent == null) {
-      body.remove(Constant.torrents);
+      fields[Constant.useAutoTMM] = useAutoTMM;
     }
 
-    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD}', body: body);
-    _checkForInvalidParameters(resp);
+    fields[Constant.skip_checking] = skip_checking;
+    fields[Constant.paused] = paused;
+    fields[Constant.root_folder] = root_folder;
+    fields[Constant.sequentialDownload] = sequentialDownload;
+    fields[Constant.firstLastPiecePrio] = prioritizeFirstLastPiece;
+
+    List<http.MultipartFile> files = [];
+    if (torrentFileContents.isNotEmpty) {
+      int i = 1;
+      torrentFileContents.forEach((element) {
+        files.add(http.MultipartFile.fromBytes(Constant.torrents, element, filename: '${i}.torrent', contentType: MediaType('application', 'x-bittorrent')));
+      });
+    }
+
+    http.StreamedResponse response = await session.postMulti('${apiURL}${QbitTorrentApiEndPoint.API_TORRENT_ADD}', fields, files);
+    if (response.statusCode != 200) {
+      throw InvalidParameterException2(response);
+    }
   }
 
   @override
@@ -678,9 +682,8 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
   }
 
   @override
-  Future<void> addTorrent(String url,
-      {String? torrentFileContent,
-      String? savePath,
+  Future<void> addTorrent(String url, Uint8List? torrentFileContent,
+      {String? savePath,
       String? cookie,
       String? category,
       bool skip_checking = false,
@@ -692,8 +695,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       bool? useAutoTMM,
       bool sequentialDownload = false,
       bool prioritizeFirstLastPiece = false}) async {
-    await addTorrents([url],
-        torrentFileContent: torrentFileContent,
+    await addTorrents([url], torrentFileContent == null ? [] : [torrentFileContent],
         savepath: savePath,
         cookie: cookie,
         category: category,

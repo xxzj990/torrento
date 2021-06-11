@@ -6,7 +6,7 @@ import 'package:torrento/src/qbittorrent/qbittorrent_interface/qbittorrent_sessi
 
 ///Singleton Session class to handle cookies
 class Session implements IQbitTorrentSession {
-  Map<String, String> sessionHeaders = {};//'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
+  Map<String, String> sessionHeaders = {}; //'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
 
   @override
   Future<http.Response> get(String url, {Map<String, String>? headers}) async {
@@ -34,6 +34,33 @@ class Session implements IQbitTorrentSession {
   }
 
   void _updateCookie(http.Response response) {
+    String? rawCookie = response.headers['set-cookie'];
+    if (rawCookie != null) {
+      int index = rawCookie.indexOf(';');
+      sessionHeaders['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+    }
+  }
+
+  @override
+  Future<http.StreamedResponse> postMulti(String url, Map<String, dynamic> fields, List<http.MultipartFile> files) async {
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    if (fields.isNotEmpty) {
+      fields.forEach((key, value) {
+        request.fields[key] = value;
+      });
+    }
+    if (files.isNotEmpty) {
+      files.forEach((element) {
+        request.files.add(element);
+      });
+    }
+    request.headers.addAll(sessionHeaders);
+    var response = await request.send();
+    _updateCookie2(response);
+    return response;
+  }
+
+  void _updateCookie2(http.StreamedResponse response) {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
