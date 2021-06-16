@@ -709,4 +709,91 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
         sequentialDownload: sequentialDownload,
         prioritizeFirstLastPiece: prioritizeFirstLastPiece);
   }
+
+  @override
+  Future getRssItems({bool? withData}) async {
+    Map<String, dynamic> body = {};
+    if (withData != null) {
+      body[Constant.withData] = withData;
+    }
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_ITEMS}', body: body);
+    _checkForInvalidParameters(resp);
+    return json.decode(utf8.decode(resp.bodyBytes));
+  }
+
+  @override
+  Future<void> addRssFeed(String url, {String? path}) async {
+    Map<String, dynamic> body = {Constant.url: url};
+    if (path != null) {
+      body[Constant.path] = path;
+    }
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_ADD_FEED}', body: body);
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> addRssFolder(String path) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_ADD_FOLDER}', body: {Constant.path: path});
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future getRssArticlesForRule(String ruleName) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_MATCHINGARTICLES}', body: {Constant.ruleName: ruleName});
+    _checkForInvalidParameters(resp);
+    return json.decode(utf8.decode(resp.bodyBytes));
+  }
+
+  @override
+  Future getRssAutoRules() async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_RULES}');
+    _checkForInvalidParameters(resp);
+    return json.decode(utf8.decode(resp.bodyBytes));
+  }
+
+  @override
+  Future<void> markRssAsRead(String itemPath, {String? articleId}) async {
+    Map<String, dynamic> body = {Constant.itemPath: itemPath};
+    if (articleId != null) {
+      body[Constant.articleId] = articleId;
+    }
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_MARKASREAD}', body: body);
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> moveRssItem(String itemPath, String destPath) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_MOVE_ITEM}', body: {Constant.itemPath: itemPath, Constant.destPath: destPath});
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> refreshRssItem(String itemPath) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_REFRESHITEM}', body: {Constant.itemPath: itemPath});
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> removeRssAutoRule(String ruleName) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_REMOVE_RULE}', body: {Constant.ruleName: ruleName});
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> removeRssItem(String path) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_REMOVE_ITEM}', body: {Constant.path: path});
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> renameRssAutoRuleName(String ruleName, String newRuleName) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_RENAME_RULE}', body: {Constant.ruleName: ruleName, Constant.newRuleName: newRuleName});
+    _checkForInvalidParameters(resp);
+  }
+
+  @override
+  Future<void> setRssAutoRule(String ruleName, String ruleDefJson) async {
+    Response resp = await session.post('${apiURL}${QbitTorrentApiEndPoint.API_RSS_SET_RULE}', body: {Constant.ruleName: ruleName, Constant.ruleDef: ruleDefJson});
+    _checkForInvalidParameters(resp);
+  }
 }

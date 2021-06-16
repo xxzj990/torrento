@@ -80,4 +80,22 @@ class Constant {
   static const id = 'id';
 
   static const priority = 'priority';
+
+  static const withData = 'withData';
+
+  static const url = 'url';
+
+  static const path = 'path';
+
+  static const ruleName = 'ruleName';
+
+  static const newRuleName = 'newRuleName';
+
+  static const itemPath = 'itemPath';
+
+  static const articleId = 'articleId';
+
+  static const destPath = 'destPath';
+
+  static const ruleDef = 'ruleDef';
 }

@@ -84,6 +84,9 @@ class QbitTorrentApiEndPoint {
   static final API_RSS_RENAME_RULE = '/rss/renameRule';
   static final API_RSS_REMOVE_RULE = '/rss/removeRule';
   static final API_RSS_RULES = '/rss/rules';
+  static final API_RSS_MATCHINGARTICLES = '/rss/matchingArticles';
+  static final API_RSS_MARKASREAD = '/rss/markAsRead';
+  static final API_RSS_REFRESHITEM = '/rss/refreshItem';
 
   static final API_SEARCH_START = '/search/start';
   static final API_SEARCH_STOP = '/search/stop';

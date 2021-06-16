@@ -216,4 +216,28 @@ abstract class QbitTorrentController extends TorrentController {
   Future setForceStart(List<String> torrentHashes, bool value);
 
   Future setSuperSeeding(List<String> torrentHashes, bool value);
+
+  Future getRssItems({bool? withData});
+
+  Future<void> addRssFeed(String url, {String? path});
+
+  Future<void> addRssFolder(String path);
+
+  Future<void> removeRssItem(String path);
+
+  Future<void> moveRssItem(String itemPath, String destPath);
+
+  Future<void> markRssAsRead(String itemPath, {String? articleId});
+
+  Future<void> refreshRssItem(String itemPath);
+
+  Future getRssAutoRules();
+
+  Future getRssArticlesForRule(String ruleName);
+
+  Future<void> removeRssAutoRule(String ruleName);
+
+  Future<void> renameRssAutoRuleName(String ruleName, String newRuleName);
+
+  Future<void> setRssAutoRule(String ruleName, String ruleDefJson);
 }
