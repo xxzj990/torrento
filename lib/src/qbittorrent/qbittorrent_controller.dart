@@ -33,7 +33,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
 // Throws InvalidParameterException if status code is not 200
   void _checkForInvalidParameters(http.Response response) {
-    print('statusCode:${response.statusCode}');
+    //print('statusCode:${response.statusCode}');
     if (response.statusCode != 200) {
       throw InvalidParameterException(response);
     }
