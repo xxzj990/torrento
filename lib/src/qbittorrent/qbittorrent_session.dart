@@ -19,15 +19,14 @@ class Session implements IQbitTorrentSession {
 
   @override
   Future<http.Response> post(String url, {Map<String, String>? headers, Map<String, dynamic>? body, Encoding encoding = const Utf8Codec()}) async {
+    Map<String, dynamic> copyBody = {};
     body?.keys.forEach((key) {
-      if (body[key] == null) {
-        body.remove(key);
-      } else {
-        body[key] = body[key].toString();
+      if (body[key] != null) {
+        copyBody[key] = body[key].toString();
       }
     });
 
-    http.Response response = await http.post(Uri.parse(url), body: body, headers: sessionHeaders, encoding: encoding);
+    http.Response response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding);
     //log('status : ${response.statusCode} , response body : ' + response.body);
     _updateCookie(response);
     return response;

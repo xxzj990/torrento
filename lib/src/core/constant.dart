@@ -98,4 +98,8 @@ class Constant {
   static const destPath = 'destPath';
 
   static const ruleDef = 'ruleDef';
+
+  static const pattern = 'pattern';
+
+  static const plugins = 'plugins';
 }

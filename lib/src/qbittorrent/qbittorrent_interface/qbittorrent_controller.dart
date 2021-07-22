@@ -240,4 +240,16 @@ abstract class QbitTorrentController extends TorrentController {
   Future<void> renameRssAutoRuleName(String ruleName, String newRuleName);
 
   Future<void> setRssAutoRule(String ruleName, String ruleDefJson);
+
+  Future searchStart(String pattern, {String plugins, String category});
+
+  Future<void> searchStop(int id);
+
+  Future searchStatus({int? id});
+
+  Future searchResults(int id, {int? limit, int? offset});
+
+  Future<void> searchDelete(int id);
+
+  Future searchPlugins();
 }
