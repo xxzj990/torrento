@@ -57,6 +57,8 @@ class Constant {
 
   static const categories = 'categories';
 
+  static const tag = 'tag';
+
   static const tags = 'tags';
 
   static const enable = 'enable';

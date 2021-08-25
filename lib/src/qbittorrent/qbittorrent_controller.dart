@@ -210,13 +210,16 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
   /// =======================  Torrent api methods ======================
 
   @override
-  Future<List> getTorrentsList({TorrentFilter? filter, String? category, String? sort, bool? reverse, int? limit, int? offset, List<String>? hashes}) async {
+  Future<List> getTorrentsList({TorrentFilter? filter, String? category, String? sort, bool? reverse, int? limit, int? offset, List<String>? hashes, String? tag}) async {
     final Map<String, dynamic> body = {};
     if (filter != null) {
       body[Constant.filter] = filter.toString().split('.').last;
     }
     if (category != null) {
       body[Constant.category] = category;
+    }
+    if(tag != null) {
+      body[Constant.tag] = tag;
     }
     if (sort != null) {
       body[Constant.sort] = sort;
@@ -346,6 +349,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       {String? savepath,
       String? cookie,
       String? category,
+      String? tags,
       bool skip_checking = false,
       bool paused = false,
       bool root_folder = false,
@@ -368,6 +372,9 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
     }
     if (category != null) {
       fields[Constant.category] = category;
+    }
+    if (tags != null) {
+      fields[Constant.tags] = tags;
     }
     if (rename != null) {
       fields[Constant.rename] = rename;
@@ -690,6 +697,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
       {String? savePath,
       String? cookie,
       String? category,
+      String? tags,
       bool skip_checking = false,
       bool paused = false,
       bool root_folder = false,
@@ -703,6 +711,7 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
         savepath: savePath,
         cookie: cookie,
         category: category,
+        tags: tags,
         skip_checking: skip_checking,
         paused: paused,
         root_folder: root_folder,

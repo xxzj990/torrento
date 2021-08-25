@@ -79,7 +79,7 @@ abstract class QbitTorrentController extends TorrentController {
 
   /// Get a list of torrents based on the filters and applied parameters. See api docs for more info on response object
   @override
-  Future<List> getTorrentsList({TorrentFilter filter, String category, String sort, bool reverse, int limit, int offset, List<String> hashes});
+  Future<List> getTorrentsList({TorrentFilter filter, String category, String sort, bool reverse, int limit, int offset, List<String> hashes, String tag});
 
   /// Get torrent generic properties
   @override
@@ -114,6 +114,7 @@ abstract class QbitTorrentController extends TorrentController {
       {String savePath,
       String cookie,
       String category,
+      String tags,
       bool skip_checking = false,
       bool paused = false,
       bool root_folder = false,
@@ -132,6 +133,7 @@ abstract class QbitTorrentController extends TorrentController {
       {String savepath,
       String cookie,
       String category,
+      String tags,
       bool skip_checking = false,
       bool paused = false,
       bool root_folder = false,
