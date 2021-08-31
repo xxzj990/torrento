@@ -35,7 +35,7 @@ class Session implements IQbitTorrentSession {
 
     var proxyBody = {
       'url': url,
-      'body': copyBody,
+      'body': json.encode(copyBody),
     };
     http.Response response = await http.post(Uri.parse('http://localhost:8080/request'), body: proxyBody, headers: sessionHeaders, encoding: encoding);
     //http.Response response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding);
