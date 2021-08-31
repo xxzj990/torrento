@@ -11,7 +11,14 @@ class Session implements IQbitTorrentSession {
   @override
   Future<http.Response> get(String url, {Map<String, String>? headers}) async {
     /// headers receives as per the headers arg is sent to the API>
-    http.Response response = await http.get(Uri.parse(url), headers: sessionHeaders);
+
+    var proxyBody = {
+      'url': url,
+    };
+
+    http.Response response = await http.post(Uri.parse('http://localhost:8080/request'), body: proxyBody, headers: sessionHeaders);
+
+    //http.Response response = await http.get(Uri.parse(url), headers: sessionHeaders);
     _updateCookie(response);
     //log('status : ${response.statusCode} , response body : ' + response.body);
     return response;
@@ -26,7 +33,12 @@ class Session implements IQbitTorrentSession {
       }
     });
 
-    http.Response response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding);
+    var proxyBody = {
+      'url': url,
+      'body': copyBody,
+    };
+    http.Response response = await http.post(Uri.parse('http://localhost:8080/request'), body: proxyBody, headers: sessionHeaders, encoding: encoding);
+    //http.Response response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding);
     //log('status : ${response.statusCode} , response body : ' + response.body);
     _updateCookie(response);
     return response;
