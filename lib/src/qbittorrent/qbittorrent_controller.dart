@@ -24,11 +24,13 @@ class QbitTorrentControllerImpl implements QbitTorrentController {
 
   //QbitTorrentControllerImpl(String url) : apiURL = '$url/api/v2';
 
-  QbitTorrentControllerImpl._({required this.apiURL});
+  QbitTorrentControllerImpl._({required this.apiURL, String? proxyHost}) {
+    session.proxyHost = proxyHost;
+  }
 
-  factory QbitTorrentControllerImpl({required String url}) {
+  factory QbitTorrentControllerImpl({required String url, String? proxyHost}) {
     String apiURL = '$url/api/v2';
-    return QbitTorrentControllerImpl._(apiURL: apiURL);
+    return QbitTorrentControllerImpl._(apiURL: apiURL, proxyHost: proxyHost);
   }
 
 // Throws InvalidParameterException if status code is not 200

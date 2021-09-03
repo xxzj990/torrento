@@ -8,8 +8,8 @@ enum TorrentFilter { all, downloading, completed, paused, active, inactive, resu
 
 // API Doc at : https://github.com/qbittorrent/qBittorrent/wiki/Web-API-Documentation#general-information
 abstract class QbitTorrentController extends TorrentController {
-  factory QbitTorrentController(String url) {
-    return QbitTorrentControllerImpl(url: url);
+  factory QbitTorrentController(String url, {String? proxyHost}) {
+    return QbitTorrentControllerImpl(url: url, proxyHost: proxyHost);
   }
 
   Future stopAllTorrents();
