@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:torrento/src/qbittorrent/qbittorrent_interface/qbittorrent_session.dart';
 
+const timeout = 30; //s
+
 ///Singleton Session class to handle cookies
 class Session implements IQbitTorrentSession {
   Map<String, String> sessionHeaders = {}; //'content-type': 'application/x-www-form-urlencoded; charset=utf-8'
@@ -26,9 +28,9 @@ class Session implements IQbitTorrentSession {
     http.Response response;
     if (proxy.isNotEmpty) {
       var proxyBody = {'url': Uri.encodeFull(url)};
-      response = await http.post(Uri.parse('${proxy}/request'), body: json.encode(proxyBody), headers: sessionHeaders);
+      response = await http.post(Uri.parse('${proxy}/request'), body: json.encode(proxyBody), headers: sessionHeaders).timeout(Duration(seconds: timeout));
     } else {
-      response = await http.get(Uri.parse(url), headers: sessionHeaders);
+      response = await http.get(Uri.parse(url), headers: sessionHeaders).timeout(Duration(seconds: timeout));
     }
     _updateCookie(response);
     return response;
@@ -45,9 +47,9 @@ class Session implements IQbitTorrentSession {
     http.Response response;
     if (proxy.isNotEmpty) {
       var proxyBody = {'url': Uri.encodeFull(url), 'body': copyBody};
-      response = await http.post(Uri.parse('${proxy}/request'), body: json.encode(proxyBody), headers: sessionHeaders, encoding: encoding);
+      response = await http.post(Uri.parse('${proxy}/request'), body: json.encode(proxyBody), headers: sessionHeaders, encoding: encoding).timeout(Duration(seconds: timeout));
     } else {
-      response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding);
+      response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding).timeout(Duration(seconds: timeout));
     }
     _updateCookie(response);
     return response;
@@ -55,7 +57,7 @@ class Session implements IQbitTorrentSession {
 
   @override
   Future<http.StreamedResponse> postMulti(String url, Map<String, dynamic> fields, List<http.MultipartFile> files) async {
-    var request;
+    http.MultipartRequest request;
     if (proxy.isNotEmpty) {
       request = http.MultipartRequest('POST', Uri.parse('${proxy}/requestMulti'));
       request.fields['url'] = Uri.encodeFull(url);
@@ -74,7 +76,7 @@ class Session implements IQbitTorrentSession {
       });
     }
     request.headers.addAll(sessionHeaders);
-    var response = await request.send();
+    var response = await request.send().timeout(Duration(seconds: timeout));
     _updateCookie2(response);
     return response;
   }
