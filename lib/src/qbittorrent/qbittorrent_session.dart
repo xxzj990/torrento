@@ -59,7 +59,7 @@ class Session implements IQbitTorrentSession {
   Future<http.StreamedResponse> postMulti(String url, Map<String, dynamic> fields, List<http.MultipartFile> files) async {
     http.MultipartRequest request;
     if (proxy.isNotEmpty) {
-      request = http.MultipartRequest('POST', Uri.parse('${proxy}/requestMulti'));
+      request = http.MultipartRequest('POST', Uri.parse('${proxy}/request/multi'));
       request.fields['url'] = Uri.encodeFull(url);
     } else {
       request = http.MultipartRequest('POST', Uri.parse(url));
