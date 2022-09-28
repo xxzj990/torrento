@@ -28,7 +28,7 @@ class Session implements IQbitTorrentSession {
     http.Response response;
     if (proxy.isNotEmpty) {
       var proxyBody = {'url': Uri.encodeFull(url)};
-      response = await http.post(Uri.parse('${proxy}/request'), body: json.encode(proxyBody), headers: sessionHeaders).timeout(Duration(seconds: timeout));
+      response = await http.post(Uri.parse('${proxy}/api/request'), body: json.encode(proxyBody), headers: sessionHeaders).timeout(Duration(seconds: timeout));
     } else {
       response = await http.get(Uri.parse(url), headers: sessionHeaders).timeout(Duration(seconds: timeout));
     }
@@ -47,7 +47,7 @@ class Session implements IQbitTorrentSession {
     http.Response response;
     if (proxy.isNotEmpty) {
       var proxyBody = {'url': Uri.encodeFull(url), 'body': copyBody};
-      response = await http.post(Uri.parse('${proxy}/request'), body: json.encode(proxyBody), headers: sessionHeaders, encoding: encoding).timeout(Duration(seconds: timeout));
+      response = await http.post(Uri.parse('${proxy}/api/request'), body: json.encode(proxyBody), headers: sessionHeaders, encoding: encoding).timeout(Duration(seconds: timeout));
     } else {
       response = await http.post(Uri.parse(url), body: copyBody, headers: sessionHeaders, encoding: encoding).timeout(Duration(seconds: timeout));
     }
